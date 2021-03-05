@@ -10,7 +10,6 @@ University of Rhode Island, Spring 2021
 import numpy as np
 # import pygraphviz
 
-
 class node(object):
     """
     create an object with all the info we want to carry around for each node
@@ -51,84 +50,116 @@ class node(object):
     def set_id(self, tag):
         self.id = tag
 
-
-#####################################################################
-def diagonalize(T_G, removed):
-    """
-    inupt: initial list of values to send to build cotree and a scaler value x
-    output: list of diagonal matrix entries corresponding to A(T_G) +xI
-    """
-    print(T_G)
-    # print(len(T_G))
-    print(removed)
-    #want to kill the whole lowest level so find the lowest level
-    depth =0
+def get_tree_depth(tree):
+    depth = 0
     for vertex in T_G:
         if vertex.get_level() > depth:
             depth = vertex.get_level()
-    print(depth)
-    #next pick a pair with same parent
-    wholefella = T_G
-    while depth >0:
-        for vertex in wholefella:
-            print("restart wholefella outer loop")
-            print(vertex)
-            print(vertex.get_level())
-            if vertex.get_level()== depth: 
-                firstbrother = vertex
-                print("\ncandidate for removal: ")
-                print(firstbrother)
-                T_G.remove(vertex)
-                for v2 in T_G:
-                    # print("v2")
-                    # print(v2)
-                    if (v2.get_parent()).get_id() == (firstbrother.get_parent()).get_id():
-                        #then we've found a pair
-                        alpha = firstbrother.get_label()
-                        beta = v2.get_label()
-                        print("\nfound a pair")
-                        print(firstbrother)
-                        print(v2)
-                        if depth %2 == 1: #we're at an odd level (parent is X)
-                            if (alpha+beta) != 2:
-                                v2.set_label((alpha*beta-1)/(alpha+beta -2))
-                                removed.append(alpha+beta -2)
-                            elif beta ==1:
-                                v2.set_label(1)
-                                removed.append(0)
-                            else:
-                                T_G.remove(v2)
-                                removed.append(1)
-                                removed.append(-(1-beta)**2)
-                                print("subcase 1c")
-                        else: #even level (parent is a U)
-                            if (alpha+beta) != 0:
-                                v2.set_label((alpha*beta)/(alpha+beta))
-                                removed.append(alpha+beta )
-                            elif beta ==0:
-                                v2.set_label(0)
-                                removed.append(0)
-                            else:
-                                T_G.remove(v2)
-                                removed.append(beta)
-                                removed.append(-beta)
-                                print("subcase 2c")
-                        break
-        #maybe iterate thru the leaves still on there
-        for nod in T_G:
-            #want to remove those and reset their partent' labels
-            if nod.get_level() == depth:
-                parent = nod.get_parent()
-                parent.set_label(nod.get_label())
-                T_G.remove(nod)
-                # print(nod)
-        depth -=1
-        wholefella = T_G
+    return depth
 
-    print(T_G)
-    return(removed)
+def get_vertices_of_depth(tree, depth):
+    """ iterates through the given tree, returning a list of all vertices at the given depth """
+    
+    vertices = []
 
+    for vertex in tree:
+        if vertex.get_level() == depth:
+            vertices.append(vertex)
 
+    print(f"vertices at depth {depth}: {vertices}")
+    return vertices
+
+def find_brother_pairs(vertices):
+    brothers = []
+    used_brothers = []
+    for vertex1 in vertices:
+        for vertex2 in vertices:
+            # print(f"vertex1: {vertex1}")
+            # print(f"vertex2: {vertex2}")
+            
+            if vertex1 == vertex2:
+                # print(f"these are the same, passing")
+                break
+
+            # if we have already used this vertex as a brother, ignore this loop
+            if vertex1 in used_brothers:
+                print(f"we've used this brother: {vertex1}")
+                break
+
+            vertex1_parent = vertex1.get_parent().get_id()
+            vertex2_parent = vertex2.get_parent().get_id()
+            # print(f"vertex1 parent id: {vertex1_parent}")
+            # print(f"vertex2 parent id: {vertex2_parent}")
+             
+            if vertex1_parent == vertex2_parent:
+                used_brothers.append(vertex1)
+                print(f"adding {vertex1} to used_brothers list")
+                # print(f"Found some brothers! vertex1: {vertex1} vertex2: {vertex2}")
+                brothers.append((vertex1, vertex2))
+
+    return brothers
+
+def diagonalize_leah(T_G):
+    print(f"Tree: {T_G}")
+
+    depth = get_tree_depth(T_G)
+    removed = []
+
+    for current_depth in range(depth, 0, -1):
+        # find all vertices at the current level
+        vertices = get_vertices_of_depth(T_G, current_depth)
+
+        # find all brother pairs amongst this list of vertices
+        brothers = find_brother_pairs(vertices)
+        print(f"Brothers: {brothers}")
+
+        # loop through brother list 
+        # update removed leaves and labels
+        for brother in brothers:
+            alpha = brother[0].get_label()
+            beta = brother[1].get_label()
+
+            if current_depth %2 == 1: #we're at an odd level (parent is X)
+                if (alpha+beta) != 2:
+                    brother[1].set_label((alpha*beta-1)/(alpha+beta -2))
+                    removed.append(alpha+beta -2)
+                    print(f"removing brother 1: {brother[1]}")
+                    T_G.remove(brother[0])
+                elif beta ==1:
+                    brother[1].set_label(1)
+                    removed.append(0)
+                    T_G.remove(brother[0])
+                else:
+                    T_G.remove(brother[0])
+                    T_G.remove(brother[1])
+                    removed.append(1)
+                    removed.append(-(1-beta)**2)
+                    print("subcase 1c")
+            else: #even level (parent is a U)
+                if (alpha+beta) != 0:
+                    brother[1].set_label((alpha*beta)/(alpha+beta))
+                    removed.append(alpha+beta )
+                    T_G.remove(brother[0])
+                elif beta ==0:
+                    brother[1].set_label(0)
+                    removed.append(0)
+                    T_G.remove(brother[0])
+                else:
+                    T_G.remove(brother[0])
+                    T_G.remove(brother[1])
+                    removed.append(beta)
+                    removed.append(-beta)
+                    print("subcase 2c")
+
+        print(f"Tree after brother loop: {T_G}")
+        # relabel parents ~daddiez~
+        # remove every leaf at current depth
+        vertices_for_relabel = get_vertices_of_depth(T_G, current_depth)
+
+        for vertex in vertices_for_relabel:
+            parent = vertex.get_parent()
+            parent.set_label(vertex.get_label())
+            T_G.remove(vertex)
 
 def draw_tree(T_G, removed):
     """
@@ -214,7 +245,8 @@ if __name__ == '__main__':
     x = 1
     #call diagonalize
     T_G = build_tree(a_i, x)
-    diag = diagonalize(T_G, [])
+    # diag = diagonalize(T_G, [])
+    diag = diagonalize_leah(T_G)
     adj = make_cograph(T_G, a_i)
     # print(adj)
     # draw_tree(diag, [])
