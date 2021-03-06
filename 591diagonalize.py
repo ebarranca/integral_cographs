@@ -8,7 +8,7 @@ code file by Emily Barranca for MTH  591
 University of Rhode Island, Spring 2021
 """
 import numpy as np
-# import pygraphviz
+from graphviz import Graph
 
 class node(object):
     """
@@ -24,15 +24,16 @@ class node(object):
     def __repr__(self):
         if self.label == None:
             if self.level %2 == 0:
-                return "(X) %s" % self.id
+                return "(X) " #"%s" % self.id
             else:
-                return "(U) %s" % self.id
+                return "(U) " #"%s" % self.id
         else:
-            return str("%s %s" %(self.label ,self.id))
+            return str("%s " %(self.label))
 
     def add_child(self, kiddo):
         self.children.append(kiddo)
-
+    def get_children(self):
+        return self.children
     def get_level(self):
         return self.level
     def set_level(self, lev):
@@ -110,6 +111,7 @@ def diagonalize(T_G):
     removed = []
 
     for current_depth in range(depth, 0, -1):
+        draw_tree(T_G, removed, current_depth)
         # find all vertices at the current level
         vertices = get_vertices_of_depth(T_G, current_depth)
 
@@ -162,14 +164,34 @@ def diagonalize(T_G):
             parent = vertex.get_parent()
             parent.set_label(vertex.get_label())
             T_G.remove(vertex)
+    draw_tree(T_G, removed, current_depth)
+
     return removed
 
-def draw_tree(T_G, removed):
+def draw_tree(T_G, removed, depth):
     """
     input: cotree and list of removed vertices to add to  the  image
     output: none but updates output images for each set of iters
     """
-    pass
+    # pass
+    X = Graph(comment = "cotree")
+    for vertex in T_G:
+        if vertex.get_level()%2 ==0 and vertex.get_label() ==None:
+            s = "X"
+        elif vertex.get_level()%2 == 1 and vertex.get_label() ==None:
+            s = "U"
+        elif vertex.get_label() == "root":
+            s = "X"
+        else:
+            s = str(vertex.get_label())
+        X.node(vertex.get_id(), label = s)
+        for kiddo in vertex.get_children():
+            if kiddo.get_id() not in X:
+                X.node(kiddo.get_id())
+            X.edge(vertex.get_id(), kiddo.get_id())
+    for val in removed:
+        X.node("%d" % val )
+    X.render("cotree_depth_%d" % depth , view= True)
 
 
 
@@ -181,7 +203,7 @@ def build_tree(alist, x):
     """
     #initialize root and a parent for it for cotree
     dummy= node(None, "dummy") #root needs a parent so we don't take it as a pair or throw errors
-    root = node(None, "r")
+    root = node(None, "X")
     root.set_label("root")
     root.set_parent(dummy)
     V= [root]
@@ -249,10 +271,11 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,2,2]
+    a_i = [2,3,2,3]
     # a_i = [2,3] #testing make_cograph func
-    x = 3
+    x = 1
     T_G = build_tree(a_i, x)
+    # draw_tree(T_G, [])
     adj = make_cograph(T_G, a_i)
     diag = diagonalize(T_G)
     print("\nDiagonal entries: ")
