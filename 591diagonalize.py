@@ -170,11 +170,7 @@ def draw_tree(T_G, removed):
     output: none but updates output images for each set of iters
     """
     pass
-    # tree = Digraph()
-    # tree.node('0', label = "poop")
-    # # print(tree)
-    # # tree.format = 'pdf'
-    # tree.render()
+
 
 
 def build_tree(alist, x):
@@ -243,7 +239,7 @@ def make_cograph(tree, alist):
                     if pari == parj:
                         if n1.get_parent().get_level() % 2==0: # parent is X join
                             adj[i][j] = 1
-                            adj[j][i] = 1
+                            # adj[j][i] = 1
                         break
                     n1 = n1.get_parent()
                     n2 = n2.get_parent()
@@ -253,20 +249,16 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    # a_i = [2,2,3]
-    a_test_adj = [2,3]
-    x = 1
-    #call diagonalize
-    T_G = build_tree(a_test_adj, x)
-    adj = make_cograph(T_G, a_test_adj)
-    # diag = diagonalize(T_G, [])
+    a_i = [2,2,2]
+    # a_i = [2,3] #testing make_cograph func
+    x = 3
+    T_G = build_tree(a_i, x)
+    adj = make_cograph(T_G, a_i)
     diag = diagonalize(T_G)
-    print("diagonal entries: ")
+    print("\nDiagonal entries: ")
     print(diag)
-
+    print("\nCograph adjacency matrix:")
     print(adj)
     evals = np.linalg.eigvals(adj)
+    print("\nCograph eigenvalues:")
     print(evals)
-    # print(adj)
-    # draw_tree(diag, [])
-    # print(diag)
