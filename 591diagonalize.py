@@ -51,6 +51,10 @@ class node(object):
         self.id = tag
 
 def get_tree_depth(tree):
+    """
+    input: balanced cotree
+    output: integer for the level of the leaves
+    """
     depth = 0
     for vertex in T_G:
         if vertex.get_level() > depth:
@@ -58,48 +62,48 @@ def get_tree_depth(tree):
     return depth
 
 def get_vertices_of_depth(tree, depth):
-    """ iterates through the given tree, returning a list of all vertices at the given depth """
-    
-    vertices = []
+    """
+    input: cotree and a target depth
+    return: a list of all vertices at the target depth
+    written by Leah Brumgard
+    """
 
+    vertices = []
     for vertex in tree:
         if vertex.get_level() == depth:
             vertices.append(vertex)
-
-    print(f"vertices at depth {depth}: {vertices}")
     return vertices
 
 def find_brother_pairs(vertices):
+    """
+    input: list of vertices of the same depth
+    output: list of vertex tuples  that we will pick as coduplicate pairs
+    written by Leah Brumgard
+    """
     brothers = []
     used_brothers = []
     for vertex1 in vertices:
         for vertex2 in vertices:
-            # print(f"vertex1: {vertex1}")
-            # print(f"vertex2: {vertex2}")
-            
             if vertex1 == vertex2:
-                # print(f"these are the same, passing")
                 break
-
             # if we have already used this vertex as a brother, ignore this loop
             if vertex1 in used_brothers:
-                print(f"we've used this brother: {vertex1}")
                 break
-
             vertex1_parent = vertex1.get_parent().get_id()
             vertex2_parent = vertex2.get_parent().get_id()
-            # print(f"vertex1 parent id: {vertex1_parent}")
-            # print(f"vertex2 parent id: {vertex2_parent}")
-             
+
             if vertex1_parent == vertex2_parent:
                 used_brothers.append(vertex1)
-                print(f"adding {vertex1} to used_brothers list")
-                # print(f"Found some brothers! vertex1: {vertex1} vertex2: {vertex2}")
                 brothers.append((vertex1, vertex2))
 
     return brothers
 
-def diagonalize_leah(T_G):
+def diagonalize(T_G):
+    """
+    input: balanced cotree
+    output:list of diagonal matrix entries corresponding to A(T_G) +xI
+    written by Leah Brumgard and Emily Barranca
+    """
     print(f"Tree: {T_G}")
 
     depth = get_tree_depth(T_G)
@@ -111,9 +115,8 @@ def diagonalize_leah(T_G):
 
         # find all brother pairs amongst this list of vertices
         brothers = find_brother_pairs(vertices)
-        print(f"Brothers: {brothers}")
 
-        # loop through brother list 
+        # loop through brother list
         # update removed leaves and labels
         for brother in brothers:
             alpha = brother[0].get_label()
@@ -121,10 +124,9 @@ def diagonalize_leah(T_G):
 
             if current_depth %2 == 1: #we're at an odd level (parent is X)
                 if (alpha+beta) != 2:
-                    brother[1].set_label((alpha*beta-1)/(alpha+beta -2))
+                    brother[1].set_label((alpha*beta-1)/(alpha+beta -2)) #reset value for brother who stays
                     removed.append(alpha+beta -2)
-                    print(f"removing brother 1: {brother[1]}")
-                    T_G.remove(brother[0])
+                    T_G.remove(brother[0]) #remove other brother
                 elif beta ==1:
                     brother[1].set_label(1)
                     removed.append(0)
@@ -151,7 +153,7 @@ def diagonalize_leah(T_G):
                     removed.append(-beta)
                     print("subcase 2c")
 
-        print(f"Tree after brother loop: {T_G}")
+        print(f"Tree after level %d: {T_G}" % current_depth)
         # relabel parents ~daddiez~
         # remove every leaf at current depth
         vertices_for_relabel = get_vertices_of_depth(T_G, current_depth)
@@ -160,6 +162,7 @@ def diagonalize_leah(T_G):
             parent = vertex.get_parent()
             parent.set_label(vertex.get_label())
             T_G.remove(vertex)
+    return removed
 
 def draw_tree(T_G, removed):
     """
@@ -225,29 +228,45 @@ def make_cograph(tree, alist):
     #initialize a matrix of the right size to be all 0s
     adj = np.zeros((ord, ord))
     #bubble up the tree
-
-
+    #for each leaf
+    leaves = get_vertices_of_depth(tree, len(alist))
+    print(leaves)
+    for i in range(len(leaves)):
+        for j in range(len(leaves)):
+            if i != j:
+                #we have 2 distinct leaves find MRCA
+                n1 = leaves[i]
+                n2= leaves[j]
+                while True:
+                    pari = n1.get_parent().get_id()
+                    parj = n2.get_parent().get_id()
+                    if pari == parj:
+                        if n1.get_parent().get_level() % 2==0: # parent is X join
+                            adj[i][j] = 1
+                            adj[j][i] = 1
+                        break
+                    n1 = n1.get_parent()
+                    n2 = n2.get_parent()
     return adj
 
 #######################################################################
-def find_evals(mat):
-    """
-    input: adjacency matrix
-    output: list of eigenvalues of the matrix
-    """
-    pass
-
-
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,2,3]
+    # a_i = [2,2,3]
+    a_test_adj = [2,3]
     x = 1
     #call diagonalize
-    T_G = build_tree(a_i, x)
+    T_G = build_tree(a_test_adj, x)
+    adj = make_cograph(T_G, a_test_adj)
     # diag = diagonalize(T_G, [])
-    diag = diagonalize_leah(T_G)
-    adj = make_cograph(T_G, a_i)
+    diag = diagonalize(T_G)
+    print("diagonal entries: ")
+    print(diag)
+
+    print(adj)
+    evals = np.linalg.eigvals(adj)
+    print(evals)
     # print(adj)
     # draw_tree(diag, [])
     # print(diag)
