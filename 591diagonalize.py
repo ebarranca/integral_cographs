@@ -34,6 +34,8 @@ class node(object):
         self.children.append(kiddo)
     def get_children(self):
         return self.children
+    def clear_children(self):
+        self.children = []
     def get_level(self):
         return self.level
     def set_level(self, lev):
@@ -109,9 +111,10 @@ def diagonalize(T_G):
 
     depth = get_tree_depth(T_G)
     removed = []
+    draw_tree(T_G, removed, depth+1)
 
     for current_depth in range(depth, 0, -1):
-        draw_tree(T_G, removed, current_depth)
+        # draw_tree(T_G, removed, current_depth)
         # find all vertices at the current level
         vertices = get_vertices_of_depth(T_G, current_depth)
 
@@ -155,16 +158,24 @@ def diagonalize(T_G):
                     removed.append(-beta)
                     print("subcase 2c")
 
-        print(f"Tree after level %d: {T_G}" % current_depth)
+        # print(f"Tree after level %d: {T_G}" % current_depth)
         # relabel parents ~daddiez~
         # remove every leaf at current depth
         vertices_for_relabel = get_vertices_of_depth(T_G, current_depth)
+        parents = get_vertices_of_depth(T_G, current_depth -1)
 
         for vertex in vertices_for_relabel:
             parent = vertex.get_parent()
             parent.set_label(vertex.get_label())
             T_G.remove(vertex)
-    draw_tree(T_G, removed, current_depth)
+
+        for par in parents:
+            par.clear_children()
+
+        # print(f"Tree about to draw tree %d: {T_G}" % current_depth)
+        draw_tree(T_G, removed, current_depth)
+
+    # draw_tree(T_G, removed, current_depth)
 
     return removed
 
@@ -174,6 +185,7 @@ def draw_tree(T_G, removed, depth):
     output: none but updates output images for each set of iters
     """
     # pass
+    print(f"Tree about to draw tree: {T_G}" )
     X = Graph(comment = "cotree")
     for vertex in T_G:
         if vertex.get_level()%2 ==0 and vertex.get_label() ==None:
@@ -189,8 +201,10 @@ def draw_tree(T_G, removed, depth):
             if kiddo.get_id() not in X:
                 X.node(kiddo.get_id())
             X.edge(vertex.get_id(), kiddo.get_id())
+    ctr = 1
     for val in removed:
-        X.node("%d" % val )
+        X.node("r%d"%ctr, label = str(val), color = 'pink')
+        ctr +=1
     X.render("cotree_depth_%d" % depth , view= True)
 
 
@@ -271,7 +285,7 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,3,2,3]
+    a_i = [2,3,2]
     # a_i = [2,3] #testing make_cograph func
     x = 1
     T_G = build_tree(a_i, x)
