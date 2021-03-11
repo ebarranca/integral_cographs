@@ -285,7 +285,7 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,3,2]
+    a_i = [2,2,2,2]
     # a_i = [2,3] #testing make_cograph func
     x = 1
     T_G = build_tree(a_i, x)
