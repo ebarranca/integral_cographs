@@ -205,7 +205,7 @@ def draw_tree(T_G, removed, depth):
     for val in removed:
         X.node("r%d"%ctr, label = str(val), color = 'pink')
         ctr +=1
-    X.render("cotree_depth_%d" % depth , view= True)
+    X.render("[2,3,2]_xequals0/cotree_depth_%d" % depth , view= True)
 
 
 
@@ -285,17 +285,31 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,2,2,2]
+    a_i = [2,3,2]
     # a_i = [2,3] #testing make_cograph func
-    x = 1
+    x = 0
     T_G = build_tree(a_i, x)
     # draw_tree(T_G, [])
     adj = make_cograph(T_G, a_i)
     diag = diagonalize(T_G)
-    print("\nDiagonal entries: ")
-    print(diag)
-    print("\nCograph adjacency matrix:")
-    print(adj)
-    evals = np.linalg.eigvals(adj)
-    print("\nCograph eigenvalues:")
-    print(evals)
+    st = "[2,3,2]_xequals0"
+    oput = open("%s/outputfile" % st, 'w')
+    oput.write("Diagonal entries: \n[")
+    for d in diag:
+        oput.write("%d, "%d)
+    oput.write("]")
+    oput.write("\nCograph adjacency matrix:\n")
+    oput.write("[")
+    for i in range(len(adj)):
+        oput.write("[")
+        for j in range(len(adj[i])):
+            if j == len(adj[i])-1:
+                oput.write("%d " % adj[i][j])
+            else:
+                oput.write("%d, " % adj[i][j])
+        oput.write("],\n")
+    oput.write("]")
+    oput.close()
+    # evals = np.linalg.eigvals(adj)
+    # print("\nCograph eigenvalues:")
+    # print(evals)

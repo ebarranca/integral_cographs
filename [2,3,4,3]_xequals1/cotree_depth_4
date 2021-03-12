@@ -1,0 +1,148 @@
+// cotree
+graph {
+	X [label=X]
+	10
+	X -- 10
+	11
+	X -- 11
+	10 [label=U]
+	20
+	10 -- 20
+	21
+	10 -- 21
+	22
+	10 -- 22
+	11 [label=U]
+	23
+	11 -- 23
+	24
+	11 -- 24
+	25
+	11 -- 25
+	20 [label=X]
+	30
+	20 -- 30
+	31
+	20 -- 31
+	32
+	20 -- 32
+	33
+	20 -- 33
+	21 [label=X]
+	34
+	21 -- 34
+	35
+	21 -- 35
+	36
+	21 -- 36
+	37
+	21 -- 37
+	22 [label=X]
+	38
+	22 -- 38
+	39
+	22 -- 39
+	310
+	22 -- 310
+	311
+	22 -- 311
+	23 [label=X]
+	312
+	23 -- 312
+	313
+	23 -- 313
+	314
+	23 -- 314
+	315
+	23 -- 315
+	24 [label=X]
+	316
+	24 -- 316
+	317
+	24 -- 317
+	318
+	24 -- 318
+	319
+	24 -- 319
+	25 [label=X]
+	320
+	25 -- 320
+	321
+	25 -- 321
+	322
+	25 -- 322
+	323
+	25 -- 323
+	30 [label=0.3333333333333333]
+	31 [label=0.3333333333333333]
+	32 [label=0.3333333333333333]
+	33 [label=0.3333333333333333]
+	34 [label=0.3333333333333333]
+	35 [label=0.3333333333333333]
+	36 [label=0.3333333333333333]
+	37 [label=0.3333333333333333]
+	38 [label=0.3333333333333333]
+	39 [label=0.3333333333333333]
+	310 [label=0.3333333333333333]
+	311 [label=0.3333333333333333]
+	312 [label=0.3333333333333333]
+	313 [label=0.3333333333333333]
+	314 [label=0.3333333333333333]
+	315 [label=0.3333333333333333]
+	316 [label=0.3333333333333333]
+	317 [label=0.3333333333333333]
+	318 [label=0.3333333333333333]
+	319 [label=0.3333333333333333]
+	320 [label=0.3333333333333333]
+	321 [label=0.3333333333333333]
+	322 [label=0.3333333333333333]
+	323 [label=0.3333333333333333]
+	r1 [label=2 color=pink]
+	r2 [label=1.5 color=pink]
+	r3 [label=2 color=pink]
+	r4 [label=1.5 color=pink]
+	r5 [label=2 color=pink]
+	r6 [label=1.5 color=pink]
+	r7 [label=2 color=pink]
+	r8 [label=1.5 color=pink]
+	r9 [label=2 color=pink]
+	r10 [label=1.5 color=pink]
+	r11 [label=2 color=pink]
+	r12 [label=1.5 color=pink]
+	r13 [label=2 color=pink]
+	r14 [label=1.5 color=pink]
+	r15 [label=2 color=pink]
+	r16 [label=1.5 color=pink]
+	r17 [label=2 color=pink]
+	r18 [label=1.5 color=pink]
+	r19 [label=2 color=pink]
+	r20 [label=1.5 color=pink]
+	r21 [label=2 color=pink]
+	r22 [label=1.5 color=pink]
+	r23 [label=2 color=pink]
+	r24 [label=1.5 color=pink]
+	r25 [label=2 color=pink]
+	r26 [label=1.5 color=pink]
+	r27 [label=2 color=pink]
+	r28 [label=1.5 color=pink]
+	r29 [label=2 color=pink]
+	r30 [label=1.5 color=pink]
+	r31 [label=2 color=pink]
+	r32 [label=1.5 color=pink]
+	r33 [label=2 color=pink]
+	r34 [label=1.5 color=pink]
+	r35 [label=2 color=pink]
+	r36 [label=1.5 color=pink]
+	r37 [label=2 color=pink]
+	r38 [label=1.5 color=pink]
+	r39 [label=2 color=pink]
+	r40 [label=1.5 color=pink]
+	r41 [label=2 color=pink]
+	r42 [label=1.5 color=pink]
+	r43 [label=2 color=pink]
+	r44 [label=1.5 color=pink]
+	r45 [label=2 color=pink]
+	r46 [label=1.5 color=pink]
+	r47 [label=2 color=pink]
+	r48 [label=1.5 color=pink]
+}
