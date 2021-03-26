@@ -205,7 +205,7 @@ def draw_tree(T_G, removed, depth):
     for val in removed:
         X.node("r%d"%ctr, label = str(val), color = 'pink')
         ctr +=1
-    X.render("test/[2,2,2]_xequals3/cotree_depth_%d" % depth , view= True)
+    X.render("presentation/[2,2,3]_xequals-8/cotree_depth_%d" % depth , view= True)
 
 
 
@@ -285,15 +285,15 @@ def make_cograph(tree, alist):
 #######################################################################
 if __name__ == '__main__':
     # first determine the list of a_i values
-    a_i = [2,2,2]
+    a_i = [2,2,3]
     # a_i = [2,3] #testing make_cograph func
-    x = 3
+    x = -8
     T_G = build_tree(a_i, x)
     # draw_tree(T_G, [])
     adj = make_cograph(T_G, a_i)
     diag = diagonalize(T_G)
-    st = "test/[2,2,2]_xequals3"
-    oput = open("%s/outputfile" % st, 'w')
+    st = "[2,2,3]_xequals-8"
+    oput = open("presentation/%s/outputfile" % st, 'w')
     oput.write("Diagonal entries: \n[")
     for d in diag:
         oput.write("%d, "%d)
